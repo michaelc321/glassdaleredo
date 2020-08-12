@@ -2,26 +2,26 @@
  *   ConvictionSelect component that renders a select HTML element
  *   which lists all convictions in the Glassdale PD API
  */
-import { useConvictions, getConvictions } from "./ConvictionProvider.js"
+import { useOfficer, getOfficers } from "./OfficerDataProvider.js"
 
 // Get a reference to the DOM element where the <select> will be rendered
-const contentTarget = document.querySelector(".filters__crime")
+const contentTarget = document.querySelector(".filters__officer")
 const eventHub = document.querySelector(".container")
 
 // Capture that the user generated a change event by the browser
 contentTarget.addEventListener("change", changeEvent => {
 
     // Construct the event based on agreement with Steve
-    const customEvent = new CustomEvent("crimeSelected", {
+    const customEvent = new CustomEvent("officerSelected", {
         detail: {
-            crimeId: changeEvent.target.value
+            officerId: changeEvent.target.value
         }
     })
 
     eventHub.dispatchEvent(customEvent)
 })
 
-const render = convictionsCollection => {
+const render = officerCollection => {
     /*
         Use interpolation here to invoke the map() method on
         the convictionsCollection to generate the option elements.
@@ -29,10 +29,10 @@ const render = convictionsCollection => {
     */
     contentTarget.innerHTML = `
         <select class="dropdown" id="crimeSelect">
-            <option value="0">Please select a crime...</option>
+            <option value="0">Please select an Officer...</option>
             ${
-                convictionsCollection.map(convictionObject => {
-                        return `<option value="${ convictionObject.id }">${convictionObject.name}</option>`
+                officerCollection.map(officerObject => {
+                        return `<option value="${ officerObject.id }">${officerObject.name}</option>`
                     }
                 ).join("")
             }
@@ -40,12 +40,12 @@ const render = convictionsCollection => {
     `
 }
 
-export const ConvictionSelect = () => {
-    getConvictions()
+export const OfficerSelect = () => {
+    getOfficers()
     .then(() => {
         // Get all convictions from application state
-        const convictions = useConvictions()
+        const officers = useOfficer()
 
-        render(convictions)
+        render(officers)
     })
 }
